@@ -1,7 +1,9 @@
+import UserResults from "../components/users/UserResults";
+
 const Home = () => {
   return (
     <div>
-      <div className="text-6xl">Welcome</div>
+      <UserResults />
     </div>
   );
 };
