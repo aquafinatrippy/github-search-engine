@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import GithubContext from "../../context/GithubContext";
+import GithubContext from "../../context/github/GithubContext";
 import Loading from "../shared/Loading";
 import UserItem from "./UserItem";
 
