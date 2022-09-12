@@ -1,36 +1,21 @@
-import axios from "axios";
-import { useState } from "react";
+import { useContext } from "react";
 import { useEffect } from "react";
+import GithubContext from "../../context/GithubContext";
 import Loading from "../shared/Loading";
+import UserItem from "./UserItem";
 
 const UserResults = () => {
-  const [loading, setLoading] = useState(true);
-  const [users, setUsers] = useState([]);
+  const { fetchUsers, users, loading } = useContext(GithubContext);
+
   useEffect(() => {
-    getUsers();
+    fetchUsers();
   }, []);
 
-  const getUsers = async () => {
-    let config = {};
-    if (process.env.REACT_APP_GITHUB_TOKEN) {
-      config = {
-        headers: {
-          Authorization: `token ${process.env.REACT_APP_GITHUB_TOKEN}`,
-        },
-      };
-    }
-    const res = await axios.get(
-      `${process.env.REACT_APP_GITHUB_URL}/users`,
-      config
-    );
-    setUsers(res.data);
-    setLoading(false);
-  };
   if (loading) return <Loading />;
   return (
     <div className="grid grid-cols-1 gap-8 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2">
       {users.map((item) => (
-        <h1>{item.login}</h1>
+        <UserItem user={item} />
       ))}
     </div>
   );
