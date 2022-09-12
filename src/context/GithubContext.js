@@ -1,7 +1,6 @@
 import { createContext, useReducer } from "react";
 import axios from "axios";
 import GithubReducer from "./GithubReducer";
-import { data } from "autoprefixer";
 
 const GithubContext = createContext();
 
@@ -13,12 +12,17 @@ const github_token = process.env.REACT_APP_GITHUB_TOKEN
 export const GithubProvider = ({ children }) => {
   const initState = {
     users: [],
-    loading: true,
+    loading: false,
   };
 
   const [state, dispatch] = useReducer(GithubReducer, initState);
 
+  const setLoading = () => {
+    dispatch({ type: "SET_LOADING" });
+  };
+
   const fetchUsers = async () => {
+    setLoading();
     let config = {};
     if (process.env.REACT_APP_GITHUB_TOKEN) {
       config = {
@@ -34,6 +38,7 @@ export const GithubProvider = ({ children }) => {
       payload: res.data,
     });
   };
+
   return (
     <GithubContext.Provider
       value={{ users: state.users, loading: state.loading, fetchUsers }}
