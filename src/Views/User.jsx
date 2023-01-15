@@ -5,16 +5,22 @@ import GithubContext from "../context/github/GithubContext";
 import { FaCodepen, FaStore, FaUserFriends, FaUsers } from "react-icons/fa";
 import Loading from "../components/shared/Loading";
 import RepoList from "../components/repos/RepoList";
+import { getUser, getUserRepos } from "../context/github/GithubActions";
 
 const User = () => {
-  const { getUser, user, loading, getUserRepos, repos } =
-    useContext(GithubContext);
+  const { user, loading, repos, dispatch } = useContext(GithubContext);
   const params = useParams();
 
   useEffect(() => {
-    getUser(params.login);
-    getUserRepos(params.login);
-  }, []);
+    dispatch({ type: "SET_LOADING" });
+    const getUserData = async () => {
+      const userData = await getUser(params.login);
+      const userRepos = await getUserRepos(params.login);
+      dispatch({ type: "GET_USER", payload: userData });
+      dispatch({ type: "GET_REPOS", payload: userRepos });
+    };
+    getUserData();
+  }, [dispatch, params.login]);
 
   if (loading) {
     return <Loading></Loading>;
@@ -71,7 +77,7 @@ const User = () => {
                 <a
                   href={html_url}
                   target="_blank"
-                  rel="noref"
+                  rel="noreferrer"
                   className="btn btn-outline"
                 >
                   Visit Github Profile
